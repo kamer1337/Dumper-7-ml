@@ -104,6 +104,7 @@ public:
 	struct ClassHolder
 	{
 		int classSize;
+		int classAlignment = 0;
 		EType classType;
 		std::string className;
 		std::vector<std::string> interitedTypes;

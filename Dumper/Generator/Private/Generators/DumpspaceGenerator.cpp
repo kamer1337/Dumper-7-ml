@@ -401,6 +401,7 @@ DSGen::ClassHolder DumpspaceGenerator::GenerateStruct(const StructWrapper& Struc
 	DSGen::ClassHolder StructOrClass;
 	StructOrClass.className = GetStructPrefixedName(Struct);
 	StructOrClass.classSize = Struct.GetSize();
+	StructOrClass.classAlignment = Struct.GetAlignment();
 	StructOrClass.classType = Struct.IsClass() ? DSGen::ET_Class : DSGen::ET_Struct;
 	StructOrClass.interitedTypes = GetSuperClasses(Struct);
 
