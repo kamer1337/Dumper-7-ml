@@ -1403,8 +1403,27 @@ void CppGenerator::GenerateSDKHeader(StreamType& SdkHpp)
 {
 	WriteFileHead(SdkHpp, nullptr, EFileType::SdkHpp, "Includes the entire SDK. Include files directly for faster compilation!");
 
+	SdkHpp << R"(
+// -------------------------------------------------------
+// SDK Organization
+// -------------------------------------------------------
+// This file includes all SDK packages in dependency order.
+// For faster compilation times, include only the specific
+// package files you need instead of this master header.
+//
+// Example:
+//   #include "SDK/Engine_classes.hpp"
+//   #include "SDK/Engine_functions.cpp" // Add to project
+//
+// -------------------------------------------------------
 
-	auto ForEachElementCallback = [&SdkHpp](const PackageManagerIterationParams& OldParams, const PackageManagerIterationParams& NewParams, bool bIsStruct) -> void
+)";
+
+	// Track if we've printed section headers
+	bool bPrintedStructsHeader = false;
+	bool bPrintedClassesHeader = false;
+
+	auto ForEachElementCallback = [&SdkHpp, &bPrintedStructsHeader, &bPrintedClassesHeader](const PackageManagerIterationParams& OldParams, const PackageManagerIterationParams& NewParams, bool bIsStruct) -> void
 	{
 		PackageInfoHandle CurrentPackage = PackageManager::GetInfo(NewParams.RequiredPackage);
 
@@ -1412,10 +1431,32 @@ void CppGenerator::GenerateSDKHeader(StreamType& SdkHpp)
 		const bool bHasStructsFile = (CurrentPackage.HasStructs() || CurrentPackage.HasEnums());
 
 		if (bIsStruct && bHasStructsFile)
+		{
+			// Print section header once
+			if (!bPrintedStructsHeader)
+			{
+				SdkHpp << "// -------------------------------------------------------\n";
+				SdkHpp << "// Structs and Enums (in dependency order)\n";
+				SdkHpp << "// -------------------------------------------------------\n\n";
+				bPrintedStructsHeader = true;
+			}
+
 			SdkHpp << std::format("#include \"SDK/{}_structs.hpp\"\n", CurrentPackage.GetName());
+		}
 
 		if (!bIsStruct && bHasClassesFile)
+		{
+			// Print section header once when transitioning to classes
+			if (!bPrintedClassesHeader)
+			{
+				SdkHpp << "\n// -------------------------------------------------------\n";
+				SdkHpp << "// Classes (in dependency order)\n";
+				SdkHpp << "// -------------------------------------------------------\n\n";
+				bPrintedClassesHeader = true;
+			}
+
 			SdkHpp << std::format("#include \"SDK/{}_classes.hpp\"\n", CurrentPackage.GetName());
+		}
 	};
 
 	PackageManager::IterateDependencies(ForEachElementCallback);
