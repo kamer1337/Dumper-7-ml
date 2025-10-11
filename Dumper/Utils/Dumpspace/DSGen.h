@@ -105,6 +105,7 @@ public:
 	{
 		int classSize;
 		int classAlignment = 0;
+		int classUnalignedSize = 0;
 		EType classType;
 		std::string className;
 		std::vector<std::string> interitedTypes;

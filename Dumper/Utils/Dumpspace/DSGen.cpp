@@ -129,6 +129,10 @@ void DSGen::bakeStructOrClass(ClassHolder& classHolder)
 	gAlign["__MDKClassAlignment"] = classHolder.classAlignment;
 	membersArray.push_back(gAlign);
 
+	nlohmann::json gUnalignedSize;
+	gUnalignedSize["__MDKClassUnalignedSize"] = classHolder.classUnalignedSize;
+	membersArray.push_back(gUnalignedSize);
+
 	for(auto& member : classHolder.members)
 	{
 		nlohmann::json jmember;
