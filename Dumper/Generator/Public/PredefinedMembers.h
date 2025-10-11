@@ -83,17 +83,38 @@ inline bool CompareUnrealProperties(UEProperty Left, UEProperty Right)
     return Left.GetOffset() < Right.GetOffset();
 };
 
-// requires strict weak ordering
+/**
+ * @brief Comparison function for sorting predefined struct/class members
+ * 
+ * Sorting order:
+ *   1. Static members (alphabetically by name)
+ *   2. Instance members (by memory offset)
+ * 
+ * Rationale:
+ *   - Static members have no memory offset, so alphabetical sorting provides consistency
+ *   - Instance members must be sorted by offset to match actual memory layout
+ *   - Grouping static members first improves SDK readability
+ * 
+ * Performance:
+ *   - Fast path: Integer comparison for instance members (most common case)
+ *   - Slow path: String comparison only when both members are static (rare)
+ * 
+ * @param Left First member to compare
+ * @param Right Second member to compare
+ * @return true if Left should come before Right in sorted order
+ * @note Satisfies strict weak ordering requirements for std::sort
+ */
 inline bool ComparePredefinedMembers(const PredefinedMember& Left, const PredefinedMember& Right)
 {
-    // if both members are static, sort lexically
+    // Both static: sort lexically by name for consistency
     if (Left.bIsStatic && Right.bIsStatic)
         return Left.Name < Right.Name;
 
-    // if one member is static, return true if Left is static, false if Right
+    // One static: static members come first
     if (Left.bIsStatic || Right.bIsStatic)
         return Left.bIsStatic > Right.bIsStatic;
 
+    // Both instance: sort by memory offset (must match actual layout)
     return Left.Offset < Right.Offset;
 };
 
@@ -105,7 +126,25 @@ Order:
     inline
 */
 
-// requires strict weak ordering
+/**
+ * @brief Comparison function for sorting Unreal Engine functions
+ * 
+ * Sorting order:
+ *   1. Static functions (no instance required)
+ *   2. Non-const functions (can modify state)
+ *   3. Const functions (read-only operations)
+ *   Within each group, sort by object index for stability
+ * 
+ * Rationale:
+ *   - Static functions are utility functions, group first for visibility
+ *   - Const functions are read-only, separate for clarity
+ *   - Stable sort by index ensures consistent generation between runs
+ * 
+ * @param Left First function to compare
+ * @param Right Second function to compare
+ * @return true if Left should come before Right in sorted order
+ * @note Satisfies strict weak ordering requirements for std::sort
+ */
 inline bool CompareUnrealFunctions(UEFunction Left, UEFunction Right)
 {
     const bool bIsLeftStatic = Left.HasFlags(EFunctionFlags::Static);
@@ -114,32 +153,57 @@ inline bool CompareUnrealFunctions(UEFunction Left, UEFunction Right)
     const bool bIsLeftConst = Left.HasFlags(EFunctionFlags::Const);
     const bool bIsRightConst = Right.HasFlags(EFunctionFlags::Const);
 
-    // Static members come first
+    // Static functions come first (don't require instance)
     if (bIsLeftStatic != bIsRightStatic)
         return bIsLeftStatic > bIsRightStatic;
 
-    // Const members come last
+    // Const functions come last (read-only operations)
     if (bIsLeftConst != bIsRightConst)
         return bIsLeftConst < bIsRightConst;
 
+    // Stable sort by object index
     return Left.GetIndex() < Right.GetIndex();
 };
 
-// requires strict weak ordering
+/**
+ * @brief Comparison function for sorting predefined functions (manual SDK additions)
+ * 
+ * Sorting order:
+ *   1. Non-inline functions (implementation in .cpp files)
+ *      a. Static first
+ *      b. Instance second
+ *   2. Inline functions (implementation in headers)
+ *      a. Static first
+ *      b. Instance second
+ *   3. Within each group, const functions last
+ *   4. Finally, sort alphabetically by function signature
+ * 
+ * Rationale:
+ *   - Non-inline separates interface (.hpp) from implementation (.cpp)
+ *   - Static functions first as they're often utilities
+ *   - Const functions last as they're read-only operations
+ *   - Alphabetical for predictable ordering within each group
+ * 
+ * @param Left First function to compare
+ * @param Right Second function to compare
+ * @return true if Left should come before Right in sorted order
+ * @note Satisfies strict weak ordering requirements for std::sort
+ */
 inline bool ComparePredefinedFunctions(const PredefinedFunction& Left, const PredefinedFunction& Right)
 {
-    // Non-inline members come first
+    // Non-inline functions come first (go in .cpp files)
     if (Left.bIsBodyInline != Right.bIsBodyInline)
         return Left.bIsBodyInline < Right.bIsBodyInline;
 
-    // Static members come first
+    // Static functions come first (don't require instance)
     if (Left.bIsStatic != Right.bIsStatic)
         return Left.bIsStatic > Right.bIsStatic;
 
-    // Const members come last
+    // Const functions come last (read-only operations)
     if (Left.bIsConst != Right.bIsConst)
         return Left.bIsConst < Right.bIsConst;
 
+    // Alphabetical sort by signature for consistency
     return Left.NameWithParams < Right.NameWithParams;
 };
 
