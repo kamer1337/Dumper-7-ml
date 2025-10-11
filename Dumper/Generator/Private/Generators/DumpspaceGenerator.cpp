@@ -409,9 +409,6 @@ DSGen::ClassHolder DumpspaceGenerator::GenerateStruct(const StructWrapper& Struc
 	for (const PropertyWrapper& Wrapper : Members.IterateMembers())
 		AddMemberToStruct(StructOrClass, Wrapper);
 
-	if (!Struct.IsClass())
-		return StructOrClass;
-
 	for (const FunctionWrapper& Wrapper : Members.IterateFunctions())
 		StructOrClass.functions.push_back(GenearateFunction(Wrapper));
 
