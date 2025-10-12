@@ -401,6 +401,8 @@ DSGen::ClassHolder DumpspaceGenerator::GenerateStruct(const StructWrapper& Struc
 	DSGen::ClassHolder StructOrClass;
 	StructOrClass.className = GetStructPrefixedName(Struct);
 	StructOrClass.classSize = Struct.GetSize();
+	StructOrClass.classAlignment = Struct.GetAlignment();
+	StructOrClass.classUnalignedSize = Struct.GetUnalignedSize();
 	StructOrClass.classType = Struct.IsClass() ? DSGen::ET_Class : DSGen::ET_Struct;
 	StructOrClass.interitedTypes = GetSuperClasses(Struct);
 
@@ -408,9 +410,6 @@ DSGen::ClassHolder DumpspaceGenerator::GenerateStruct(const StructWrapper& Struc
 
 	for (const PropertyWrapper& Wrapper : Members.IterateMembers())
 		AddMemberToStruct(StructOrClass, Wrapper);
-
-	if (!Struct.IsClass())
-		return StructOrClass;
 
 	for (const FunctionWrapper& Wrapper : Members.IterateFunctions())
 		StructOrClass.functions.push_back(GenearateFunction(Wrapper));
