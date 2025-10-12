@@ -29,3 +29,6 @@ jobs:
         path: |
           .\Dumper\x64\Release\Dumper*.dll
           .\Dumper\x64\Release\Dumper*.pdb
+          
+    - name: Attest Build Provenance
+      uses: actions/attest-build-provenance@v3.0.0
