@@ -334,7 +334,7 @@ Generated SDK structure:
 ```
 C:/Dumper-7/GameName-GameVersion/
 ├── CppSDK/
-│   ├── SDK.hpp                    # Main include (includes everything)
+│   ├── SDK.hpp                    # Master include (all packages, organized)
 │   ├── PropertyFixup.hpp          # Property offset fixes
 │   ├── NameCollisions.inl         # Name collision handling
 │   ├── UnrealContainers.hpp       # TArray, TMap, etc.
@@ -349,11 +349,24 @@ C:/Dumper-7/GameName-GameVersion/
 │   │   ├── Engine_classes.hpp
 │   │   ├── Engine_functions.cpp
 │   │   └── [Other packages...]
-├── SDK/                           # Alternative flat structure
 ├── Mappings/
 │   └── game_mappings.usmap       # Mapping file
 └── Dumpspace/
     └── game.dumpspace            # Dumpspace format
+```
+
+### SDK.hpp Organization
+
+The master `SDK.hpp` header is organized into sections for easy navigation:
+
+1. **Documentation Header**: Explains SDK structure and usage recommendations
+2. **Structs and Enums Section**: All `*_structs.hpp` files in dependency order
+3. **Classes Section**: All `*_classes.hpp` files in dependency order
+
+**Performance Tip**: For faster compilation, include only the specific package headers you need instead of using `SDK.hpp`. For example:
+```cpp
+#include "SDK/Engine_classes.hpp"  // Only Engine classes
+// Remember to add corresponding .cpp files to your project
 ```
 
 ## Testing & Debugging

@@ -62,7 +62,13 @@ See [Xmake.md](Xmake.md) for details.
 ### 3. Use the Generated SDK
 
 - Default output location: `C:\Dumper-7\GameName-GameVersion\CppSDK\`
+- The generated `SDK.hpp` file is now organized into clear sections (structs, classes) for easy navigation
 - **See [UsingTheSDK.md](UsingTheSDK.md) for a complete guide on using the generated SDK**
+
+**Quick Tip:** For faster compilation, include only specific package headers instead of `SDK.hpp`:
+```cpp
+#include "SDK/Engine_classes.hpp"  // Instead of "SDK.hpp"
+```
 
 ## Documentation
 

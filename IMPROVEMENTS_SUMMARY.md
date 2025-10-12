@@ -253,3 +253,7 @@ This PR significantly improves the Dumper-7 project by:
 4. **Maintaining code quality** while improving clarity
 
 All changes follow the principle of **minimal modifications** - no logic was changed, only documentation was added to make the project more accessible and understandable.
+
+---
+
+**Note**: Additional SDK organization improvements have been made. See [SDK_ORGANIZATION_IMPROVEMENTS.md](SDK_ORGANIZATION_IMPROVEMENTS.md) for details on the enhanced SDK.hpp structure and documentation updates.

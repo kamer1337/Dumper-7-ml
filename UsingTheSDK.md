@@ -17,17 +17,66 @@
    ![image](https://github.com/Encryqed/Dumper-7/assets/64608145/5a9404a7-1b49-4fd2-a3fa-a7467f18f39a)
 2. Drop the contents into your VS projects' directory \
   ![image](https://github.com/Encryqed/Dumper-7/assets/64608145/14d4bb1b-8a23-43f8-8994-8bdae25af005)
-3. If you do not care about your projects' compilation time, add `#include "SDK.hpp"` at the top of your `Main.cpp` file
-4. If you **do** care, and you want faster compilation-times, directly include only the files you require. \
-    Adding `#include "SDK/Engine_classes.hpp"` is a good start in this case.
-5. Add `Basic.cpp` and `CoreUObject_functions.cpp` to your VS project
-6. If you call a function from the SDK you need to add the .cpp file, that contains the function-body, to your project. \
+
+### Understanding SDK.hpp Organization
+
+The generated `SDK.hpp` file is organized into clear sections:
+- **Documentation Header**: Usage tips and recommendations
+- **Structs and Enums**: All struct/enum includes in dependency order
+- **Classes**: All class includes in dependency order
+
+### Include Strategy
+
+Choose the right approach for your project:
+
+<details>
+<summary><b>Option 1: Include Everything (SDK.hpp) - Simple but Slow</b></summary>
+
+Add `#include "SDK.hpp"` at the top of your `Main.cpp` file.
+
+**Pros:**
+- Simple - one include for everything
+- No missing dependencies
+
+**Cons:**
+- Very slow compilation times
+- Recompiles everything on any change
+
+</details>
+
+<details>
+<summary><b>Option 2: Selective Includes - Fast Compilation ✅ Recommended</b></summary>
+
+Include only the specific package headers you need:
+
+```cpp
+#include "SDK/Basic.hpp"           // Always needed
+#include "SDK/CoreUObject_classes.hpp"  // Common base classes
+#include "SDK/Engine_classes.hpp"  // Engine functionality
+// Add other specific packages as needed
+```
+
+**Pros:**
+- Much faster compilation
+- Only recompiles what you use
+- Clearer dependencies
+
+**Cons:**
+- Need to identify required packages
+- May need to add more includes as code grows
+
+**Tip**: The SDK.hpp file shows all available packages in dependency order. Start with Basic and CoreUObject, then add packages as needed.
+
+</details>
+
+3. Add `Basic.cpp` and `CoreUObject_functions.cpp` to your VS project
+4. If you call a function from the SDK you need to add the .cpp file, that contains the function-body, to your project. \
    Example: \
    Calling `GetViewportSize()` from `APlayerController` requires you to add `Engine_functions.cpp` to your project. \
    ![image](https://github.com/Encryqed/Dumper-7/assets/64608145/c9ecf0c7-ec73-4e6a-8c6d-d7c86c26b5c8)
-7. After attempting to build the SDK go to the "Error List" and make sure to select **`Build Only`**
+5. After attempting to build the SDK go to the "Error List" and make sure to select **`Build Only`**
   ![image](https://github.com/user-attachments/assets/cd72d55e-64de-4134-a115-6a9a0af80baa)
-8. If there are any static_asserts failing, or other errors occuring, during building, read the [Issue](README.md#issues) part of the [ReadMe](README.md)
+6. If there are any static_asserts failing, or other errors occuring, during building, read the [Issue](README.md#issues) part of the [ReadMe](README.md)
 
 ## Using the SDK
 ### 1. Retrieving instances of classes/structs to manipulate them
