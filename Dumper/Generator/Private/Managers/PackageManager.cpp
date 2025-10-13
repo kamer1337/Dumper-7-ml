@@ -737,15 +737,18 @@ void PackageManager::IterateDependencies(const IteratePackagesCallbackType& Call
 
 	PackageManagerIterationParams Params = {
 		.PrevPackage = -1,
-
 		.VisitedNodes = VisitedNodes,
 	};
 
-	// Empty callback for cycle detection (not needed for dependency iteration)
-	FindCycleCallbackType OnCycleFoundCallback = [](const PackageManagerIterationParams& OldParams, const PackageManagerIterationParams& NewParams, bool bIsStruct) -> void { };
+	// Optimization: Empty callback as constexpr lambda to allow compiler optimization
+	constexpr FindCycleCallbackType OnCycleFoundCallback = [](const PackageManagerIterationParams&, const PackageManagerIterationParams&, bool) constexpr -> void { };
 
 	/* Increment hit counter for new iteration-cycle (prevents revisiting nodes) */
 	CurrentIterationHitCount++;
+
+	// Optimization: Reserve capacity if we know the approximate size
+	// This avoids reallocation during VisitedNodes operations
+	VisitedNodes.reserve(32); // Typical max depth for dependency chains
 
 	// Visit each package and its dependencies
 	for (const auto& [PackageIndex, Info] : PackageInfos)

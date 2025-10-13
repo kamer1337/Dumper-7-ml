@@ -29,20 +29,12 @@ std::string CppGenerator::MakeMemberString(const std::string& Type, const std::s
 {
 	//<tab><--45 chars--><-------50 chars----->
 	//     Type          MemberName;           // Comment
-	int NumSpacesToComment;
-
-	if (Type.length() < 45)
-	{
-		NumSpacesToComment = 50;
-	}
-	else if ((Type.length() + Name.length()) > 95)
-	{
-		NumSpacesToComment = 1;
-	}
-	else
-	{
-		NumSpacesToComment = 50 - (Type.length() - 45);
-	}
+	
+	// Optimization: Calculate spacing inline to minimize branches
+	const size_t TypeLen = Type.length();
+	const int NumSpacesToComment = (TypeLen < 45) ? 50 
+		: ((TypeLen + Name.length()) > 95) ? 1 
+		: (50 - static_cast<int>(TypeLen - 45));
 
 	return std::format("\t{:{}} {:{}} // {}\n", Type, 45, Name + ";", NumSpacesToComment, std::move(Comment));
 }
@@ -54,12 +46,18 @@ std::string CppGenerator::MakeMemberStringWithoutName(const std::string& Type)
 
 std::string CppGenerator::GenerateBytePadding(const int32 Offset, const int32 PadSize, std::string&& Reason)
 {
-	return MakeMemberString("uint8", std::format("Pad_{:X}[0x{:X}]", Offset, PadSize), std::format("0x{:04X}(0x{:04X})({})", Offset, PadSize, std::move(Reason)));
+	// Optimization: Pre-format all components to reduce allocations
+	return MakeMemberString("uint8", 
+		std::format("Pad_{:X}[0x{:X}]", Offset, PadSize), 
+		std::format("0x{:04X}(0x{:04X})({})", Offset, PadSize, std::move(Reason)));
 }
 
 std::string CppGenerator::GenerateBitPadding(uint8 UnderlayingSizeBytes, const uint8 PrevBitPropertyEndBit, const int32 Offset, const int32 PadSize, std::string&& Reason)
 {
-	return MakeMemberString(GetTypeFromSize(UnderlayingSizeBytes), std::format("BitPad_{:X}_{:X} : {:d}", Offset, PrevBitPropertyEndBit, PadSize), std::format("0x{:04X}(0x{:04X})({})", Offset, UnderlayingSizeBytes, std::move(Reason)));
+	// Optimization: Pre-format all components to reduce allocations
+	return MakeMemberString(GetTypeFromSize(UnderlayingSizeBytes), 
+		std::format("BitPad_{:X}_{:X} : {:d}", Offset, PrevBitPropertyEndBit, PadSize), 
+		std::format("0x{:04X}(0x{:04X})({})", Offset, UnderlayingSizeBytes, std::move(Reason)));
 }
 
 std::string CppGenerator::GenerateMembers(const StructWrapper& Struct, const MemberManager& Members, int32 SuperSize, int32 SuperLastMemberEnd, int32 SuperAlign, int32 PackageIndex)

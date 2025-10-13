@@ -82,6 +82,7 @@ See [Xmake.md](Xmake.md) for details.
 | [CONTRIBUTING.md](CONTRIBUTING.md) | Guidelines for contributing to the project |
 | [PROJECT_STRUCTURE.md](PROJECT_STRUCTURE.md) | Detailed codebase organization and architecture |
 | [OPTIMIZATION.md](OPTIMIZATION.md) | Performance optimizations and best practices |
+| [DUMPING_OPTIMIZATIONS.md](DUMPING_OPTIMIZATIONS.md) | **Latest performance improvements** to dumping code |
 ## Configuration
 
 ### Settings
