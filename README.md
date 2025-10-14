@@ -64,6 +64,7 @@ See [Xmake.md](Xmake.md) for details.
 - Default output location: `C:\Dumper-7\GameName-GameVersion\CppSDK\`
 - The generated `SDK.hpp` file is now organized into clear sections (structs, classes) for easy navigation
 - **See [UsingTheSDK.md](UsingTheSDK.md) for a complete guide on using the generated SDK**
+- **Check out [SDKExample/](SDKExample/) for a ready-to-compile sample project demonstrating SDK usage**
 
 **Quick Tip:** For faster compilation, include only specific package headers instead of `SDK.hpp`:
 ```cpp
@@ -75,11 +76,13 @@ See [Xmake.md](Xmake.md) for details.
 | Document | Description |
 |----------|-------------|
 | [UsingTheSDK.md](UsingTheSDK.md) | Complete guide for using the generated SDK in your projects |
+| [SDKExample/](SDKExample/) | **Ready-to-compile sample project** demonstrating SDK usage |
 | [UsingCMake.md](UsingCMake.md) | CMake build system guide |
 | [Xmake.md](Xmake.md) | Xmake build system guide |
 | [CONTRIBUTING.md](CONTRIBUTING.md) | Guidelines for contributing to the project |
 | [PROJECT_STRUCTURE.md](PROJECT_STRUCTURE.md) | Detailed codebase organization and architecture |
 | [OPTIMIZATION.md](OPTIMIZATION.md) | Performance optimizations and best practices |
+| [DUMPING_OPTIMIZATIONS.md](DUMPING_OPTIMIZATIONS.md) | **Latest performance improvements** to dumping code |
 ## Configuration
 
 ### Settings

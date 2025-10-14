@@ -480,10 +480,17 @@ void DumpspaceGenerator::Generate()
 	/* Add offsets for GObjects, GNames, GWorld, AppendString, PrcessEvent and ProcessEventIndex*/
 	GeneratedStaticOffsets();
 
+	// Optimization: Pre-define lambda to avoid repeated creation
+	DependencyManager::OnVisitCallbackType GenerateClassOrStructCallback = [](int32 Index) -> void
+	{
+		DSGen::ClassHolder StructOrClass = GenerateStruct(ObjectArray::GetByIndex<UEStruct>(Index));
+		DSGen::bakeStructOrClass(StructOrClass);
+	};
+
 	// Generates all packages and writes them to files
 	for (PackageInfoHandle Package : PackageManager::IterateOverPackageInfos())
 	{
-		if (Package.IsEmpty())
+		if (Package.IsEmpty()) [[unlikely]]
 			continue;
 
 		/*
@@ -491,29 +498,25 @@ void DumpspaceGenerator::Generate()
 		*
 		* Note: Some filestreams aren't opened but passed as parameters anyway because the function demands it, they are not used if they are closed
 		*/
+		
+		// Optimization: Process enums first in a tight loop
 		for (int32 EnumIdx : Package.GetEnums())
 		{
 			DSGen::EnumHolder Enum = GenerateEnum(ObjectArray::GetByIndex<UEEnum>(EnumIdx));
 			DSGen::bakeEnum(Enum);
 		}
 
-		DependencyManager::OnVisitCallbackType GenerateClassOrStructCallback = [&](int32 Index) -> void
-		{
-			DSGen::ClassHolder StructOrClass = GenerateStruct(ObjectArray::GetByIndex<UEStruct>(Index));
-			DSGen::bakeStructOrClass(StructOrClass);
-		};
-
-		if (Package.HasStructs())
+		// Process structs if package has them
+		if (Package.HasStructs()) [[likely]]
 		{
 			const DependencyManager& Structs = Package.GetSortedStructs();
-
 			Structs.VisitAllNodesWithCallback(GenerateClassOrStructCallback);
 		}
 
-		if (Package.HasClasses())
+		// Process classes if package has them
+		if (Package.HasClasses()) [[likely]]
 		{
 			const DependencyManager& Classes = Package.GetSortedClasses();
-
 			Classes.VisitAllNodesWithCallback(GenerateClassOrStructCallback);
 		}
 	}

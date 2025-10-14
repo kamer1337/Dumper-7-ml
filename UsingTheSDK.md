@@ -1,5 +1,9 @@
 # Using the SDK to create a simple DLL project
 
+> 💡 **Quick Start**: Check out the [SDKExample/](SDKExample/) directory for a complete, ready-to-compile Visual Studio project with comprehensive examples!
+
+This guide explains how to create a Visual Studio project from scratch to use a Dumper-7 generated SDK.
+
 ## Visual Studio project setup
 1. Create a new empty C++ project
 2. Go to `Project>Properties`

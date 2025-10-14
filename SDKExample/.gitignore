@@ -1,0 +1,28 @@
+# SDK files (users must copy their own generated SDK)
+SDK/
+
+# Build output
+Bin/
+Obj/
+
+# Visual Studio files
+.vs/
+*.user
+*.suo
+*.sdf
+*.opensdf
+*.db
+*.opendb
+*.VC.db
+
+# Intermediate files
+*.obj
+*.pch
+*.pdb
+*.ilk
+*.exp
+*.lib
+
+# Output files
+*.dll
+*.exe
