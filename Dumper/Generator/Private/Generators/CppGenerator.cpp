@@ -41,7 +41,7 @@ std::string CppGenerator::MakeMemberString(const std::string& Type, const std::s
 
 std::string CppGenerator::MakeMemberStringWithoutName(const std::string& Type)
 {
-	return '\t' + Type + ";\n";
+	return std::format("\t{};\n", Type);
 }
 
 std::string CppGenerator::GenerateBytePadding(const int32 Offset, const int32 PadSize, std::string&& Reason)

@@ -13,14 +13,14 @@ void Settings::InitWeakObjectPtrSettings()
 
 	if (!LoadAsset)
 	{
-		std::cerr << "\nDumper-7: 'LoadAsset' wasn't found, could not determine value for 'bIsWeakObjectPtrWithoutTag'!\n" << std::endl;
+		std::cerr << "\nDumper-7: 'LoadAsset' wasn't found, could not determine value for 'bIsWeakObjectPtrWithoutTag'!\n";
 		return;
 	}
 
 	const UEProperty Asset = LoadAsset.FindMember("Asset", EClassCastFlags::SoftObjectProperty);
 	if (!Asset)
 	{
-		std::cerr << "\nDumper-7: 'Asset' wasn't found, could not determine value for 'bIsWeakObjectPtrWithoutTag'!\n" << std::endl;
+		std::cerr << "\nDumper-7: 'Asset' wasn't found, could not determine value for 'bIsWeakObjectPtrWithoutTag'!\n";
 		return;
 	}
 
@@ -41,7 +41,7 @@ void Settings::InitLargeWorldCoordinateSettings()
 
 	if (!FVectorStruct) [[unlikely]]
 	{
-		std::cerr << "\nSomething went horribly wrong, FVector wasn't even found!\n\n" << std::endl;
+		std::cerr << "\nSomething went horribly wrong, FVector wasn't even found!\n\n";
 		return;
 	}
 
@@ -49,7 +49,7 @@ void Settings::InitLargeWorldCoordinateSettings()
 
 	if (!XProperty) [[unlikely]]
 	{
-		std::cerr << "\nSomething went horribly wrong, FVector::X wasn't even found!\n\n" << std::endl;
+		std::cerr << "\nSomething went horribly wrong, FVector::X wasn't even found!\n\n";
 		return;
 	}
 
@@ -66,14 +66,14 @@ void Settings::InitObjectPtrPropertySettings()
 	if (!ObjectPtrPropertyClass)
 	{
 		// The class doesn't exist, this so FieldPathProperty couldn't have been replaced with ObjectPtrProperty
-		std::cerr << std::format("\nDumper-7: bIsObjPtrInsteadOfFieldPathProperty = {}\n", Settings::Internal::bIsObjPtrInsteadOfFieldPathProperty) << std::endl;
+		std::cerr << std::format("\nDumper-7: bIsObjPtrInsteadOfFieldPathProperty = {}\n", Settings::Internal::bIsObjPtrInsteadOfFieldPathProperty);
 		Settings::Internal::bIsObjPtrInsteadOfFieldPathProperty = false;
 		return;
 	}
 
 	Settings::Internal::bIsObjPtrInsteadOfFieldPathProperty = ObjectPtrPropertyClass.GetDefaultObject().IsA(EClassCastFlags::FieldPathProperty);
 
-	std::cerr << std::format("\nDumper-7: bIsObjPtrInsteadOfFieldPathProperty = {}\n", Settings::Internal::bIsObjPtrInsteadOfFieldPathProperty) << std::endl;
+	std::cerr << std::format("\nDumper-7: bIsObjPtrInsteadOfFieldPathProperty = {}\n", Settings::Internal::bIsObjPtrInsteadOfFieldPathProperty);
 }
 
 void Settings::InitArrayDimSizeSettings()
@@ -96,14 +96,14 @@ void Settings::InitArrayDimSizeSettings()
 			if (Property.GetArrayDim() >= 0x000F0001)
 			{
 				Settings::Internal::bUseUint8ArrayDim = true;
-				std::cerr << std::format("\nDumper-7: bUseUint8ArrayDim = {}\n", Settings::Internal::bUseUint8ArrayDim) << std::endl;
+				std::cerr << std::format("\nDumper-7: bUseUint8ArrayDim = {}\n", Settings::Internal::bUseUint8ArrayDim);
 				return;
 			}
 		}
 	}
 
 	Settings::Internal::bUseUint8ArrayDim = false;
-	std::cerr << std::format("\nDumper-7: bUseUint8ArrayDim = {}\n", Settings::Internal::bUseUint8ArrayDim) << std::endl;
+	std::cerr << std::format("\nDumper-7: bUseUint8ArrayDim = {}\n", Settings::Internal::bUseUint8ArrayDim);
 }
 
 void Settings::Config::Load()

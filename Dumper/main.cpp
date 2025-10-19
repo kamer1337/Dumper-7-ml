@@ -1,6 +1,7 @@
 #include <Windows.h>
 #include <iostream>
 #include <chrono>
+#include <format>
 #include <fstream>
 
 #include "Generators/CppGenerator.h"
@@ -9,14 +10,6 @@
 #include "Generators/DumpspaceGenerator.h"
 
 #include "Generators/Generator.h"
-
-enum class EFortToastType : uint8
-{
-        Default                        = 0,
-        Subdued                        = 1,
-        Impactful                      = 2,
-        EFortToastType_MAX             = 3,
-};
 
 DWORD MainThread(HMODULE Module)
 {
@@ -59,7 +52,7 @@ DWORD MainThread(HMODULE Module)
 	std::cerr << "GameName: " << Settings::Generator::GameName << "\n";
 	std::cerr << "GameVersion: " << Settings::Generator::GameVersion << "\n\n";
 
-	std::cerr << "FolderName: " << (Settings::Generator::GameVersion + '-' + Settings::Generator::GameName) << "\n\n";
+	std::cerr << std::format("FolderName: {}-{}\n\n", Settings::Generator::GameVersion, Settings::Generator::GameName);
 
 	Generator::Generate<CppGenerator>();
 	Generator::Generate<MappingGenerator>();
@@ -68,7 +61,6 @@ DWORD MainThread(HMODULE Module)
 
 	auto t_C = std::chrono::high_resolution_clock::now();
 
-	auto ms_int_ = std::chrono::duration_cast<std::chrono::milliseconds>(t_C - t_1);
 	std::chrono::duration<double, std::milli> ms_double_ = t_C - t_1;
 
 	std::cerr << "\n\nGenerating SDK took (" << ms_double_.count() << "ms)\n\n\n";
