@@ -8,7 +8,7 @@
 
 #include "../Settings.h"
 
-constexpr std::string GetTypeFromSize(uint8 Size)
+constexpr const char* GetTypeFromSize(uint8 Size)
 {
 	switch (Size)
 	{

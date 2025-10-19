@@ -21,7 +21,7 @@ namespace OffsetFinder
 		{
 			if (ObjectValuePair[i].first == nullptr)
 			{
-				std::cerr << "Dumper-7 ERROR: FindOffset is skipping ObjectValuePair[" << i << "] because .first is nullptr." << std::endl;
+				std::cerr << "Dumper-7 ERROR: FindOffset is skipping ObjectValuePair[" << i << "] because .first is nullptr.\n";
 				continue;
 			}
 
