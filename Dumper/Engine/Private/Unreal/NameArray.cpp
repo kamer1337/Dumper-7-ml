@@ -73,7 +73,7 @@ void FNameEntry::Init(const uint8_t* FirstChunkPtr, int64 NameEntryStringOffset)
 
 		if (FNameEntryLengthShiftCount == MaxAllowedShiftCount)
 		{
-			std::cerr << "\nDumper-7: Error, couldn't get FNameEntryLengthShiftCount!\n" << std::endl;
+			std::cerr << "\nDumper-7: Error, couldn't get FNameEntryLengthShiftCount!\n" ;
 			GetStr = [](uint8* NameEntry) -> std::wstring { return L"Invalid FNameEntryLengthShiftCount!"; };
 			return;
 		}
@@ -512,14 +512,14 @@ bool NameArray::TryInit(bool bIsTestOnly)
 
 	if (CALL_PLATFORM_SPECIFIC_FUNCTION(NameArray::TryFindNameArray))
 	{
-		std::cerr << std::format("Found 'TNameEntryArray GNames' at offset 0x{:X}\n", Off::InSDK::NameArray::GNames) << std::endl;
+		std::cerr << std::format("Found 'TNameEntryArray GNames' at offset 0x{:X}\n", Off::InSDK::NameArray::GNames) ;
 		GNamesAddress = *reinterpret_cast<uint8**>(ImageBase + Off::InSDK::NameArray::GNames);// Derefernce
 		Settings::Internal::bUseNamePool = false;
 		bFoundNameArray = true;
 	}
 	else if (CALL_PLATFORM_SPECIFIC_FUNCTION(NameArray::TryFindNamePool))
 	{
-		std::cerr << std::format("Found 'FNamePool GNames' at offset 0x{:X}\n", Off::InSDK::NameArray::GNames) << std::endl;
+		std::cerr << std::format("Found 'FNamePool GNames' at offset 0x{:X}\n", Off::InSDK::NameArray::GNames) ;
 		GNamesAddress = reinterpret_cast<uint8*>(ImageBase + Off::InSDK::NameArray::GNames); // No derefernce
 		Settings::Internal::bUseNamePool = true;
 		bFoundnamePool = true;
@@ -527,7 +527,7 @@ bool NameArray::TryInit(bool bIsTestOnly)
 
 	if (!bFoundNameArray && !bFoundnamePool)
 	{
-		std::cerr << "\n\nCould not find GNames!\n\n" << std::endl;
+		std::cerr << "\n\nCould not find GNames!\n\n" ;
 		return false;
 	}
 
@@ -549,7 +549,7 @@ bool NameArray::TryInit(bool bIsTestOnly)
 		return true;
 	}
 
-	std::cerr << "The address that was found couldn't be used by the generator, this might be due to GNames-encryption.\n" << std::endl;
+	std::cerr << "The address that was found couldn't be used by the generator, this might be due to GNames-encryption.\n" ;
 
 	return false;
 }
@@ -571,14 +571,14 @@ bool NameArray::TryInit(int32 OffsetOverride, bool bIsNamePool, const char* cons
 
 	if (bIsNameArrayOverride)
 	{
-		std::cerr << std::format("Overwrote offset: 'TNameEntryArray GNames' set as offset 0x{:X}\n", Off::InSDK::NameArray::GNames) << std::endl;
+		std::cerr << std::format("Overwrote offset: 'TNameEntryArray GNames' set as offset 0x{:X}\n", Off::InSDK::NameArray::GNames) ;
 		GNamesAddress = *reinterpret_cast<uint8**>(ImageBase + Off::InSDK::NameArray::GNames);// Derefernce
 		Settings::Internal::bUseNamePool = false;
 		bFoundNameArray = true;
 	}
 	else if (bIsNamePoolOverride)
 	{
-		std::cerr << std::format("Overwrote offset: 'FNamePool GNames' set as offset 0x{:X}\n", Off::InSDK::NameArray::GNames) << std::endl;
+		std::cerr << std::format("Overwrote offset: 'FNamePool GNames' set as offset 0x{:X}\n", Off::InSDK::NameArray::GNames) ;
 		GNamesAddress = reinterpret_cast<uint8*>(ImageBase + Off::InSDK::NameArray::GNames); // No derefernce
 		Settings::Internal::bUseNamePool = true;
 		bFoundnamePool = true;
@@ -586,7 +586,7 @@ bool NameArray::TryInit(int32 OffsetOverride, bool bIsNamePool, const char* cons
 
 	if (!bFoundNameArray && !bFoundnamePool)
 	{
-		std::cerr << "\n\nCould not find GNames!\n\n" << std::endl;
+		std::cerr << "\n\nCould not find GNames!\n\n" ;
 		return false;
 	}
 
@@ -605,7 +605,7 @@ bool NameArray::TryInit(int32 OffsetOverride, bool bIsNamePool, const char* cons
 		return true;
 	}
 
-	std::cerr << "The address was overwritten, but couldn't be used. This might be due to GNames-encryption.\n" << std::endl;
+	std::cerr << "The address was overwritten, but couldn't be used. This might be due to GNames-encryption.\n" ;
 
 	return false;
 }
@@ -618,18 +618,18 @@ bool NameArray::SetGNamesWithoutCommiting()
 
 	if (CALL_PLATFORM_SPECIFIC_FUNCTION(NameArray::TryFindNameArray))
 	{
-		std::cerr << std::format("Found 'TNameEntryArray GNames' at offset 0x{:X}\n", Off::InSDK::NameArray::GNames) << std::endl;
+		std::cerr << std::format("Found 'TNameEntryArray GNames' at offset 0x{:X}\n", Off::InSDK::NameArray::GNames) ;
 		Settings::Internal::bUseNamePool = false;
 		return true;
 	}
 	else if (CALL_PLATFORM_SPECIFIC_FUNCTION(NameArray::TryFindNamePool))
 	{
-		std::cerr << std::format("Found 'FNamePool GNames' at offset 0x{:X}\n", Off::InSDK::NameArray::GNames) << std::endl;
+		std::cerr << std::format("Found 'FNamePool GNames' at offset 0x{:X}\n", Off::InSDK::NameArray::GNames) ;
 		Settings::Internal::bUseNamePool = true;
 		return true;
 	}
 
-	std::cerr << "\n\nCould not find GNames!\n\n" << std::endl;
+	std::cerr << "\n\nCould not find GNames!\n\n" ;
 	return false;
 }
 
@@ -669,7 +669,7 @@ void NameArray::PostInit()
 		}
 		Off::InSDK::NameArray::FNamePoolBlockOffsetBits = NameArray::FNameBlockOffsetBits;
 
-		std::cerr << "NameArray::FNameBlockOffsetBits: 0x" << std::hex << NameArray::FNameBlockOffsetBits << "\n" << std::endl;
+		std::cerr << "NameArray::FNameBlockOffsetBits: 0x" << std::hex << NameArray::FNameBlockOffsetBits << "\n" ;
 	}
 }
 

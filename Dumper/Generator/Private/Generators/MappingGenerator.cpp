@@ -216,7 +216,7 @@ void MappingGenerator::GeneratePropertyInfo(const PropertyWrapper& Property, std
 {
 	if (!Property.IsUnrealProperty())
 	{
-		std::cerr << "\nInvalid non-Unreal property!\n" << std::endl;
+		std::cerr << "\nInvalid non-Unreal property!\n" ;
 		return;
 	}
 
