@@ -8,7 +8,7 @@
 
 #include "../Settings.h"
 
-constexpr std::string GetTypeFromSize(uint8 Size)
+constexpr const char* GetTypeFromSize(uint8 Size)
 {
 	switch (Size)
 	{
@@ -41,7 +41,7 @@ std::string CppGenerator::MakeMemberString(const std::string& Type, const std::s
 
 std::string CppGenerator::MakeMemberStringWithoutName(const std::string& Type)
 {
-	return '\t' + Type + ";\n";
+	return std::format("\t{};\n", Type);
 }
 
 std::string CppGenerator::GenerateBytePadding(const int32 Offset, const int32 PadSize, std::string&& Reason)
@@ -1665,7 +1665,7 @@ void CppGenerator::Generate()
 			ClassesFile = StreamType(Subfolder / (U8FileName + u8"_classes.hpp"));
 
 			if (!ClassesFile.is_open())
-				std::cerr << "Error opening file \"" << (FileName + "_classes.hpp") << "\"" << std::endl;
+				std::cerr << "Error opening file \"" << (FileName + "_classes.hpp") << "\"\n";
 
 			WriteFileHead(ClassesFile, Package, EFileType::Classes);
 
@@ -1678,7 +1678,7 @@ void CppGenerator::Generate()
 			StructsFile = StreamType(Subfolder / (U8FileName + u8"_structs.hpp"));
 
 			if (!StructsFile.is_open())
-				std::cerr << "Error opening file \"" << (FileName + "_structs.hpp") << "\"" << std::endl;
+				std::cerr << "Error opening file \"" << (FileName + "_structs.hpp") << "\"\n";
 
 			WriteFileHead(StructsFile, Package, EFileType::Structs);
 
@@ -1691,7 +1691,7 @@ void CppGenerator::Generate()
 			ParametersFile = StreamType(Subfolder / (U8FileName + u8"_parameters.hpp"));
 
 			if (!ParametersFile.is_open())
-				std::cerr << "Error opening file \"" << (FileName + "_parameters.hpp") << "\"" << std::endl;
+				std::cerr << "Error opening file \"" << (FileName + "_parameters.hpp") << "\"\n";
 
 			WriteFileHead(ParametersFile, Package, EFileType::Parameters);
 		}
@@ -1701,7 +1701,7 @@ void CppGenerator::Generate()
 			FunctionsFile = StreamType(Subfolder / (U8FileName + u8"_functions.cpp"));
 
 			if (!FunctionsFile.is_open())
-				std::cerr << "Error opening file \"" << (FileName + "_functions.cpp") << "\"" << std::endl;
+				std::cerr << "Error opening file \"" << (FileName + "_functions.cpp") << "\"\n";
 
 			WriteFileHead(FunctionsFile, Package, EFileType::Functions);
 		}
