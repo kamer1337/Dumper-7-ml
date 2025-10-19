@@ -97,7 +97,7 @@ bool Generator::SetupDumperFolder()
 	catch (const std::filesystem::filesystem_error& fe)
 	{
 		std::cerr << "Could not create required folders! Info: \n";
-		std::cerr << fe.what() << std::endl;
+		std::cerr << fe.what() << '\n';
 		return false;
 	}
 
@@ -138,7 +138,7 @@ bool Generator::SetupFolders(std::string& FolderName, fs::path& OutFolder, std::
 	catch (const std::filesystem::filesystem_error& fe)
 	{
 		std::cerr << "Could not create required folders! Info: \n";
-		std::cerr << fe.what() << std::endl;
+		std::cerr << fe.what() << '\n';
 		return false;
 	}
 
