@@ -5780,6 +5780,79 @@ template<typename UnderlayingClassType, int32 Size, int32 Align = 0x8>
 using TActorBasedCycleFixup = CyclicDependencyFixupImpl::TCyclicClassFixup<UnderlayingClassType, Size, Align, class AActor>;
 )";
 
+	// Generate ML Support if enabled
+	if constexpr (Settings::MachineLearning::bEnableMLSupport)
+	{
+		BasicHpp << R"(
+
+/*
+* Machine Learning Support
+* Encrypted model runtime and inference utilities for SDK
+*/
+namespace ML
+{
+	// Encryption key for ML model data
+	struct EncryptionKey
+	{
+		uint8 Key[32];
+		uint8 IV[16];
+	};
+
+	// Encrypted model data container
+	struct EncryptedModelData
+	{
+		uint8* EncryptedData;
+		uint32 OriginalSize;
+		uint32 EncryptedSize;
+		uint32 ModelVersion;
+	};
+
+	// ML tensor data structure
+	struct TensorData
+	{
+		float* Data;
+		uint32* Shape;
+		uint32 ShapeSize;
+		uint32 TotalElements;
+	};
+
+	// Simple XOR-based model encryption/decryption
+	inline void DecryptModel(const EncryptedModelData& EncryptedData, const EncryptionKey& Key, uint8* OutBuffer)
+	{
+		for (uint32 i = 0; i < EncryptedData.OriginalSize; ++i)
+		{
+			uint8 KeyByte = Key.Key[i % 32];
+			uint8 IVByte = Key.IV[i % 16];
+			OutBuffer[i] = EncryptedData.EncryptedData[i] ^ KeyByte ^ IVByte;
+		}
+	}
+
+	// Calculate tensor size from shape
+	inline uint32 CalculateTensorSize(const uint32* Shape, uint32 ShapeSize)
+	{
+		uint32 Size = 1;
+		for (uint32 i = 0; i < ShapeSize; ++i)
+		{
+			Size *= Shape[i];
+		}
+		return Size;
+	}
+
+	// Normalize tensor data to [0, 1] range
+	inline void NormalizeTensor(TensorData& Tensor, float Min = 0.0f, float Max = 1.0f)
+	{
+		float Range = Max - Min;
+		if (Range == 0.0f) return;
+
+		for (uint32 i = 0; i < Tensor.TotalElements; ++i)
+		{
+			Tensor.Data[i] = (Tensor.Data[i] - Min) / Range;
+		}
+	}
+}
+)";
+	}
+
 
 	WriteFileEnd(BasicHpp, EFileType::BasicHpp);
 	WriteFileEnd(BasicCpp, EFileType::BasicCpp);

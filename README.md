@@ -12,7 +12,8 @@
 📚 **Well-Documented** - Complete guides for building and using the SDK  
 🎯 **Type-Safe** - Generated SDK with proper C++ types and inheritance  
 🔄 **Dependency Resolution** - Automatically handles package dependencies  
-⚡ **Optimized** - Efficient algorithms for large games (100k+ objects)
+⚡ **Optimized** - Efficient algorithms for large games (100k+ objects)  
+🤖 **ML Support** - Encrypted machine learning model integration for SDK functions
 
 ## Quick Start
 
@@ -77,6 +78,7 @@ See [Xmake.md](Xmake.md) for details.
 |----------|-------------|
 | [UsingTheSDK.md](UsingTheSDK.md) | Complete guide for using the generated SDK in your projects |
 | [SDKExample/](SDKExample/) | **Ready-to-compile sample project** demonstrating SDK usage |
+| [ML_SDK_GUIDE.md](ML_SDK_GUIDE.md) | **Machine Learning SDK integration guide** |
 | [UsingCMake.md](UsingCMake.md) | CMake build system guide |
 | [Xmake.md](Xmake.md) | Xmake build system guide |
 | [CONTRIBUTING.md](CONTRIBUTING.md) | Guidelines for contributing to the project |
