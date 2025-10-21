@@ -95,14 +95,23 @@ This is a ready-to-compile Visual Studio project that demonstrates how to use a 
 
 ## Customizing the Example
 
-The `Main.cpp` file contains several examples:
+The example files contain several demonstrations:
 
+### Main.cpp
 1. **Getting Global Instances** - Accessing UEngine and UWorld
 2. **Player Controller Access** - Getting the local player controller
 3. **Finding Objects** - Using FindObject and FindObjectFast
 4. **Type Checking** - Different methods to check object types
 5. **Calling Static Functions** - Using SDK static functions
 6. **Casting Objects** - Safe type casting with IsA()
+
+### MLExample.cpp
+1. **Model Encryption** - Encrypting and decrypting ML models
+2. **Tensor Operations** - Creating and manipulating tensors
+3. **ML with Game Objects** - Integrating ML with UE game state
+4. **Complete Workflow** - End-to-end ML example
+
+For detailed ML documentation, see [ML_SDK_GUIDE.md](../ML_SDK_GUIDE.md).
 
 ### Adding More Examples
 

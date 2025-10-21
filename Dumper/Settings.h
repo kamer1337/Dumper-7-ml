@@ -31,6 +31,21 @@ namespace Settings
 		constexpr bool bEnableEncryptedObjectPropertySupport = false;
 	}
 
+	namespace MachineLearning
+	{
+		/* Enable ML encryption and inference support in SDK */
+		constexpr bool bEnableMLSupport = true;
+
+		/* Generate ML utility functions in SDK */
+		constexpr bool bGenerateMLUtilities = true;
+
+		/* Include ML inference runtime in SDK */
+		constexpr bool bIncludeMLRuntime = true;
+
+		/* Generate encrypted model wrappers */
+		constexpr bool bGenerateEncryptedModelWrappers = true;
+	}
+
 	namespace Generator
 	{
 		//Auto generated if no override is provided
