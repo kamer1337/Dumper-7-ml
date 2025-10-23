@@ -302,6 +302,16 @@ std::string CppGenerator::GenerateSingleFunction(const FunctionWrapper& Func, co
 
 	const bool bIsConstFunc = Func.IsConst() && !Func.IsStatic();
 
+	// Add brief documentation comment for non-predefined functions
+	if (!Func.IsPredefined() && !bHasInlineBody)
+	{
+		UEFunction UnrealFunc = Func.GetUnrealFunction();
+		std::string BriefDoc = std::format("\t// Function: {} | Flags: {}\n", 
+			UnrealFunc.GetName(), 
+			StringifyFunctionFlags(FuncInfo.FuncFlags));
+		InHeaderFunctionText += BriefDoc;
+	}
+
 	// Function declaration and inline-body generation
 	InHeaderFunctionText += std::format("\t{}{}{}{}{}{}", TemplateText, (Func.IsStatic() ? "static " : ""), FuncInfo.RetType, (FuncInfo.RetType.empty() ? "" : " "), FuncInfo.FuncNameWithParams, bIsConstFunc ? " const" : "");
 	InHeaderFunctionText += (bHasInlineBody ? ("\n\t" + Func.GetPredefFunctionInlineBody()) : ";") + "\n";
@@ -313,14 +323,26 @@ std::string CppGenerator::GenerateSingleFunction(const FunctionWrapper& Func, co
 	{
 		std::string CustomComment = Func.GetPredefFunctionCustomComment();
 
+		// Enhanced documentation for predefined functions
+		std::string PredefDoc = "// Predefined Function\n";
+		if (!CustomComment.empty())
+			PredefDoc += "// Description: " + CustomComment + '\n';
+		
+		// Add function type information
+		if (Func.IsStatic())
+			PredefDoc += "// Type: Static function\n";
+		else if (bIsConstFunc)
+			PredefDoc += "// Type: Const member function\n";
+		else
+			PredefDoc += "// Type: Member function\n";
+
 		FunctionFile << std::format(R"(
-// Predefined Function
 {}
 {}{}{}::{}{}
 {}
 
 )"
-, !CustomComment.empty() ? ("// " + CustomComment + '\n') : ""
+, PredefDoc
 , Func.GetPredefFuncReturnType()
 , Func.GetPredefFuncReturnType().empty() ? "" : " "
 , StructName
@@ -359,7 +381,17 @@ std::string CppGenerator::GenerateSingleFunction(const FunctionWrapper& Func, co
 
 	for (const ParamInfo& PInfo : FuncInfo.UnrealFuncParams)
 	{
-		ParamDescriptionCommentString += std::format("// {:{}}{:{}}({})\n", PInfo.Type, 40, PInfo.Name, 55, StringifyPropertyFlags(PInfo.PropFlags));
+		// Enhanced parameter documentation with input/output indicators
+		std::string ParamDirection;
+		if (PInfo.bIsRetParam)
+			ParamDirection = "[Return]";
+		else if (PInfo.bIsOutPtr || PInfo.bIsOutRef)
+			ParamDirection = PInfo.bIsConst ? "[In/Out]" : "[Out]";
+		else
+			ParamDirection = "[In]";
+
+		ParamDescriptionCommentString += std::format("// {:<8} {:{}}{:{}}({})\n", 
+			ParamDirection, PInfo.Type, 40, PInfo.Name, 48, StringifyPropertyFlags(PInfo.PropFlags));
 
 		if (PInfo.bIsRetParam)
 			continue;
@@ -420,11 +452,30 @@ std::string CppGenerator::GenerateSingleFunction(const FunctionWrapper& Func, co
 	std::string FixedOuterName = PrefixQuotsWithBackslash(UnrealFunc.GetOuter().GetName());
 	std::string FixedFunctionName = PrefixQuotsWithBackslash(UnrealFunc.GetName());
 
+	// Generate enhanced function documentation header
+	std::string FunctionDocumentation = std::format("// Function: {}\n// Full Name: {}\n", 
+		UnrealFunc.GetName(), UnrealFunc.GetFullName());
+	
+	// Add function flags description
+	FunctionDocumentation += std::format("// Flags: ({})\n", StringifyFunctionFlags(FuncInfo.FuncFlags));
+	
+	// Add function type information
+	if (Func.IsStatic())
+		FunctionDocumentation += "// Type: Static function\n";
+	else if (Func.IsInInterface())
+		FunctionDocumentation += "// Type: Interface function\n";
+	else if (bIsConstFunc)
+		FunctionDocumentation += "// Type: Const member function\n";
+	else
+		FunctionDocumentation += "// Type: Member function\n";
+
+	// Add native function note
+	if (bIsNativeFunc)
+		FunctionDocumentation += "// Note: Native function - FunctionFlags will be temporarily modified during ProcessEvent\n";
+
 	// Function implementation generation
 	std::string FunctionImplementation = std::format(R"(
-// {}
-// ({})
-{}
+{}{}
 {} {}::{}{}
 {{
 	static class UFunction* Func = nullptr;
@@ -435,8 +486,7 @@ std::string CppGenerator::GenerateSingleFunction(const FunctionWrapper& Func, co
 	{}ProcessEvent(Func, {});{}{}{}{}
 }}
 
-)", UnrealFunc.GetFullName()
-, StringifyFunctionFlags(FuncInfo.FuncFlags)
+)", FunctionDocumentation
 , bHasParams ? ParamDescriptionCommentString : ""
 , FuncInfo.RetType
 , StructName
